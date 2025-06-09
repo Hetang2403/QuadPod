@@ -1,42 +1,28 @@
 using UnityEngine;
+
 public class VehicleMovement : MonoBehaviour
 {
-
-    public WheelCollider wheelFL;
-    public WheelCollider wheelFR;
-    public WheelCollider wheelRL;
-    public WheelCollider wheelRR;
-
+    public WheelCollider wheelFL, wheelFR, wheelRL, wheelRR;
     public float motorTorque = 200f;
     public float maxSteerAngle = 30f;
     public float brakeForce = 500f;
 
-    private float inputVertical;
-    private float inputHorizontal;
-    private bool isBraking;
-
-    void Update()
-    {
-        inputVertical = Input.GetAxis("Vertical");
-        inputHorizontal = Input.GetAxis("Horizontal");
-        isBraking = Input.GetKey(KeyCode.Space);
-    }
-
     void FixedUpdate()
     {
-        // Steering (Front Wheels)
-        wheelFL.steerAngle = maxSteerAngle * inputHorizontal;
-        wheelFR.steerAngle = maxSteerAngle * inputHorizontal;
+        float motor = Input.GetAxis("Vertical") * motorTorque;
+        float steer = Input.GetAxis("Horizontal") * maxSteerAngle;
+        bool brake = Input.GetKey(KeyCode.Space);
 
-        // Drive (Rear Wheels)
-        wheelRL.motorTorque = inputVertical * motorTorque;
-        wheelRR.motorTorque = inputVertical * motorTorque;
+        wheelFL.steerAngle = steer;
+        wheelFR.steerAngle = steer;
 
-        // Braking
-        float brake = isBraking ? brakeForce : 0f;
-        wheelFL.brakeTorque = brake;
-        wheelFR.brakeTorque = brake;
-        wheelRL.brakeTorque = brake;
-        wheelRR.brakeTorque = brake;
+        wheelRL.motorTorque = motor;
+        wheelRR.motorTorque = motor;
+
+        float brakeTorque = brake ? brakeForce : 0f;
+        wheelFL.brakeTorque = brakeTorque;
+        wheelFR.brakeTorque = brakeTorque;
+        wheelRL.brakeTorque = brakeTorque;
+        wheelRR.brakeTorque = brakeTorque;
     }
 }

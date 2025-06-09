@@ -2,20 +2,19 @@ using UnityEngine;
 
 public class RockerBogieChassis : MonoBehaviour
 {
-    public Transform leftAxle;
-    public Transform rightAxle;
+    public Transform leftAxlePivot;
+    public Transform rightAxlePivot;
     public float speed = 3f;
 
     void Update()
     {
-        float leftTilt = leftAxle.localRotation.eulerAngles.x;
-        float rightTilt = rightAxle.localRotation.eulerAngles.x;
+        float leftTilt = NormalizeAngle(leftAxlePivot.localEulerAngles.x);
+        float rightTilt = NormalizeAngle(rightAxlePivot.localEulerAngles.x);
+        float averageTilt = (leftTilt + rightTilt) / 2f;
 
-        if (leftTilt > 180) leftTilt -= 360;
-        if (rightTilt > 180) rightTilt -= 360;
-
-        float average = (leftTilt + rightTilt) / 2f;
-        Quaternion target = Quaternion.Euler(average, 0, 0);
+        Quaternion target = Quaternion.Euler(averageTilt, 0f, 0f);
         transform.localRotation = Quaternion.Slerp(transform.localRotation, target, Time.deltaTime * speed);
     }
+
+    float NormalizeAngle(float angle) => (angle > 180f) ? angle - 360f : angle;
 }
